@@ -71,8 +71,6 @@ class reCaptchaWidget extends Widget
         ?>
             <div id="<?php echo $this->id; ?>" style="display:flex;justify-content:center;" class="g-recaptcha" data-sitekey="<?php echo $pconfig['g-site-key']; ?>" data-theme="<?php echo $fconfig['theme'] ?: 'light'; ?>" data-type="<?php echo $fconfig['type'] ?: 'image'; ?>" data-size="<?php echo $fconfig['size'] ?: 'normal'; ?>"></div>
             <script src="https://www.google.com/recaptcha/api.js" type="application/javascript" async defer></script>
-            <script>console.log("asdadasd")</script>
-
     <?php
         }
         function getValue()
