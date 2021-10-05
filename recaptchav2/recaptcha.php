@@ -17,7 +17,7 @@ class reCaptchaField extends FormField
 
         $config = $this->getPluginConfig()->getInfo();
         if (count(parent::errors()) === 0) {
-            $response = json_decode(file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . $config['g-secret-key'] . '&response=' . $value));
+            $response = json_decode(file_get_contents('https://www.recaptcha.net/recaptcha/api/siteverify?secret=' . $config['g-secret-key'] . '&response=' . $value));
 
             if ($response == FALSE) {
                 $this->addError('Unable to communicate with the reCaptcha server');
@@ -70,7 +70,7 @@ class reCaptchaWidget extends Widget
 
         ?>
             <div id="<?php echo $this->id; ?>" style="display:flex;justify-content:center;" class="g-recaptcha" data-sitekey="<?php echo $pconfig['g-site-key']; ?>" data-theme="<?php echo $fconfig['theme'] ?: 'light'; ?>" data-type="<?php echo $fconfig['type'] ?: 'image'; ?>" data-size="<?php echo $fconfig['size'] ?: 'normal'; ?>"></div>
-            <script src="https://www.google.com/recaptcha/api.js" type="application/javascript" async defer></script>
+            <script src="https://www.recaptcha.net/recaptcha/api.js" type="application/javascript" async defer></script>
     <?php
         }
         function getValue()
