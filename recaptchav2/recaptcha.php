@@ -5,19 +5,17 @@ require_once('config.php');
 
 class reCaptchaField extends FormField
 {
+    static $g_site_key; 
+    static $g_secret_key;
+
     static $widget = 'reCaptchaWidget';
-    static $plugin_config;
-    function getPluginConfig()
-    {
-        return static::$plugin_config;
-    }
+
     function validateEntry($value)
     {
         parent::validateEntry($value);
 
-        $config = $this->getPluginConfig()->getInfo();
         if (count(parent::errors()) === 0) {
-            $response = json_decode(file_get_contents('https://www.recaptcha.net/recaptcha/api/siteverify?secret=' . $config['g-secret-key'] . '&response=' . $value));
+            $response = json_decode(file_get_contents('https://www.recaptcha.net/recaptcha/api/siteverify?secret=' . self::$g_secret_key . '&response=' . $value));
 
             if ($response == FALSE) {
                 $this->addError('Unable to communicate with the reCaptcha server');
@@ -65,11 +63,11 @@ class reCaptchaWidget extends Widget
 {
     function render()
     {
+        # Form field config
         $fconfig = $this->field->getConfiguration();
-        $pconfig = $this->field->getPluginConfig()->getInfo();
 
         ?>
-            <div id="<?php echo $this->id; ?>" style="display:flex;justify-content:center;" class="g-recaptcha" data-sitekey="<?php echo $pconfig['g-site-key']; ?>" data-theme="<?php echo $fconfig['theme'] ?: 'light'; ?>" data-type="<?php echo $fconfig['type'] ?: 'image'; ?>" data-size="<?php echo $fconfig['size'] ?: 'normal'; ?>"></div>
+            <div id="<?php echo $this->id; ?>" style="display:flex;justify-content:center;" class="g-recaptcha" data-sitekey="<?php echo reCaptchaField::$g_site_key; ?>" data-theme="<?php echo $fconfig['theme'] ?: 'light'; ?>" data-type="<?php echo $fconfig['type'] ?: 'image'; ?>" data-size="<?php echo $fconfig['size'] ?: 'normal'; ?>"></div>
             <script src="https://www.recaptcha.net/recaptcha/api.js" type="application/javascript" async defer></script>
     <?php
         }
@@ -88,7 +86,8 @@ class reCaptchaWidget extends Widget
         var $config_class = "GoogleRecaptchaV2Config";
         function bootstrap()
         {
-            reCaptchaField::$plugin_config = $this->getConfig();
+            $config = $this->getConfig();
+            reCaptchaField::$g_site_key = $config->get('g-site-key'); 
             FormField::addFieldTypes(__('Verification'), function () {
                 return array(
                     'recaptcha' => array('Google reCAPTCHA', 'reCaptchaField')
